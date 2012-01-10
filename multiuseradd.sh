@@ -24,7 +24,7 @@
 while IFS="," read user pass
 do
   # Encrypt password
-  pass_encrypt=`perl crypt.pl $pass`
+  pass_encrypt=`perl ./crypt.pl $pass`
   # Create new user
   useradd -p $pass_encrypt $user
 done < $1
