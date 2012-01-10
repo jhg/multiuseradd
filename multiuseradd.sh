@@ -23,7 +23,8 @@
 #  will read and split line to line while not end file.
 while IFS="," read user pass
 do
+  # Encrypt password
+  pass_encrypt=`perl crypt.pl $pass`
   # Create new user
-  #useradd $user
-  echo -e "$user and $pass \n"
+  useradd -p $pass_encrypt $user
 done < $1
