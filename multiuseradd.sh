@@ -18,6 +18,36 @@
 ##                                                                          ##
 ##############################################################################
 
+# Help
+if [ $# -lt 2 ]
+then
+  cat <<HELP
+Multiuseradd (C) 2012 Jesús Hernández Gormaz
+Only parameter of this script is the CSV file with users and passwords.
+HELP
+  exit
+fi
+
+# Check if file exist and is readable
+if [ ! -r "$1" ]
+then
+  # Exit
+  echo "File $1 no exist."
+  exit
+fi
+
+# Count line of file
+number_line=0
+# Read file line to line
+#  will read and check while not end file.
+while read line
+do
+  # Increment number of line
+  number_line=`expr $number_line + 1`
+  # Count number of commas per line
+  echo $number_line $line
+done < $1
+
 # Read file line to line and split user and password
 #  IFS is variable of Internal Field Separator, and the internal command read
 #  will read and split line to line while not end file.
@@ -26,5 +56,6 @@ do
   # Encrypt password
   pass_encrypt=`perl ./crypt.pl $pass`
   # Create new user
-  useradd -p $pass_encrypt $user
+  #useradd -p $pass_encrypt $user
+  echo $pass_encrypt
 done < $1
