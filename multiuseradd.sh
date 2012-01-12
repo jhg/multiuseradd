@@ -119,9 +119,49 @@ fi
 #  will read and split line to line while not end file.
 while IFS="," read user pass
 do
+  # Check parameter to parameter
+  all_parameter=""
+  for p in $@
+  do
+    # Parameters 0 and 1 is ignore
+    if [ "$p" = "$0" ]
+    then
+      continue
+    fi
+    if [ "$p" = "$1" ]
+    then
+      continue
+    fi
+    # Check if is a parameter
+    if [ ! ${p:0:1} = "." ]
+    then
+      # Add new parameter
+      all_parameter="$all_parameter $p"
+    fi
+  done
   # Encrypt password
   pass_encrypt=`perl ./crypt.pl $pass`
   # Create new user
-  #useradd -p $pass_encrypt $user
-  echo $pass_encrypt
+  useradd -m -p $pass_encrypt $all_parameter $user
+  # Check parameter to parameter
+  for p in $@
+  do
+    # Parameters 0 and 1 is ignore
+    if [ "$p" = "$0" ]
+    then
+      continue
+    fi
+    if [ "$p" = "$1" ]
+    then
+      continue
+    fi
+    # Check if is a file route
+    if [ ${p:0:1} = "." ] && [ ${p:1:1} = "/" ]
+    then
+      # Copy file
+      cp $p /home/$user/${p:2}
+      # Change owned
+      chown $user /home/$user/${p:2}
+    fi
+  done
 done < $1
