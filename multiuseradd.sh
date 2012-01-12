@@ -1,3 +1,5 @@
+#! /bin/bash
+
 ##############################################################################
 ##                                                                          ##
 ## Multiuseradd is a script for linux that add news users from csv file.    ##
@@ -44,9 +46,9 @@ fi
 # Help
 if [ $1 = "--version" ]
 then
-  cat <<HELP
-Multiuseradd 0.0.0
-HELP
+  cat <<VERSION
+Multiuseradd 0.0.1
+VERSION
   exit
 fi
 
@@ -67,22 +69,22 @@ number_line=0
 while read line
 do
   # Increment number of line
-  number_line=`expr $number_line + 1`
+  number_line=`expr "$number_line" + 1`
   # Check first char no comma
-  if [ ${line:0:1} = "," ]
+  if [ "${line:0:1}" = "," ]
   then
     echo "In file $1 in line $number_line have not user name, the first char is comma."
     valid=0
   fi
   # Check end char no comma
-  if [ ${line:`expr $(expr length $line) - 1`:1} = "," ]
+  if [ "${line:`expr $(expr length "$line") - 1`:1}" = "," ]
   then
     echo "In file $1 in line $number_line have not password, the end char is comma."
     valid=0
   fi
   # Count number of commas per line
   # Check char to char
-  for c in $(seq 0 `expr $(expr length $line) - 1` )
+  for c in $(seq 0 `expr $(expr length "$line") - 1` )
   do
     if [ $c = 0 ]
     then
@@ -92,11 +94,11 @@ do
       # Check if is comma
       if [ ${line:$c:1} = "," ]
       then
-        number_commas=`expr $number_commas + 1`
+        number_commas=`expr "$number_commas" + 1`
       fi
     fi
     # Check end char
-    if [ $c = `expr $(expr length $line) - 1` ]
+    if [ $c = `expr $(expr length "$line") - 1` ]
     then
       # Check total of commas
         if [ ! $number_commas = 1 ]
@@ -145,30 +147,38 @@ do
   # Encrypt password
   pass_encrypt=`perl ./crypt.pl $pass`
   # Create new user
-  useradd -m -p $pass_encrypt $all_parameter $user
-  # Check parameter to parameter
-  for p in $@
-  do
-    # Parameters 0 and 1 is ignore
-    if [ "$p" = "$0" ]
+  if [ ! "$user" = "" ] && [ ! "$pass_encrypt" = "" ]
+  then
+    if [ ! "$all_parameter" = "" ]
     then
-      continue
+      useradd -m -p $pass_encrypt $all_parameter $user
+    else
+      useradd -m -p $pass_encrypt $user
     fi
-    if [ "$p" = "$1" ]
-    then
-      continue
-    fi
-    # Check if is a file route
-    if [ ${p:0:1} = "." ] && [ ${p:1:1} = "/" ]
-    then
-      # Copy file
-      cp $p /home/$user/${p:2}
-      # Change owned
-      chown $user /home/$user/${p:2}
-    fi
-  done
-  # Updating statistics
-  total_users=`expr $total_users + 1`
+    # Check parameter to parameter
+    for p in $@
+    do
+      # Parameters 0 and 1 is ignore
+      if [ "$p" = "$0" ]
+      then
+        continue
+      fi
+      if [ "$p" = "$1" ]
+      then
+        continue
+      fi
+      # Check if is a file route
+      if [ ${p:0:1} = "." ] && [ ${p:1:1} = "/" ]
+      then
+        # Copy file
+        cp $p /home/$user/${p:2}
+        # Change owned
+        chown $user /home/$user/${p:2}
+      fi
+    done
+    # Updating statistics
+    total_users=`expr "$total_users" + 1`
+  fi
 done < $1
 
 # Statistics showing
