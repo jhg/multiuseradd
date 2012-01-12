@@ -43,12 +43,19 @@ HELP
   exit
 fi
 
-# Help
+# Version
 if [ $1 = "--version" ]
 then
   cat <<VERSION
 Multiuseradd 0.0.1
 VERSION
+  exit
+fi
+
+# Check if is root user
+if [ ! `id -u` = 0 ]
+then
+  echo "You must be root to use $0"
   exit
 fi
 
