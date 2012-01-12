@@ -14,5 +14,10 @@ This program is free software; you can redistribute it and/or
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
-The file in CSV format must use commas asseparators.
+The file in CSV format must use commas as separators.
 Need Perl interpreter for run.
+
+Use:
+  ./multiuseradd.sh <file_csv> <parameters...>
+Parameters is all useradd parameter or files in the work directory (./file)
+  that wish copy in the home directory of new user.
