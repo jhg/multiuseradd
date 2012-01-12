@@ -114,6 +114,9 @@ then
   exit
 fi
 
+# Statistics initializing
+total_users=0
+
 # Read file line to line and split user and password
 #  IFS is variable of Internal Field Separator, and the internal command read
 #  will read and split line to line while not end file.
@@ -164,4 +167,9 @@ do
       chown $user /home/$user/${p:2}
     fi
   done
+  # Updating statistics
+  total_users=`expr $total_users + 1`
 done < $1
+
+# Statistics showing
+echo "Created $total_users users."
