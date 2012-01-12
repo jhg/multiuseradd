@@ -19,7 +19,7 @@
 ##############################################################################
 
 # Help
-if [ $# -lt 2 ] || [ $1 = "--help" ]
+if [ $# -lt 1 ] || [ $1 = "--help" ]
 then
   cat <<HELP
 Multiuseradd (C) 2012 Jesús Hernández Gormaz
@@ -58,6 +58,8 @@ then
   exit
 fi
 
+# Valid for default
+valid=1
 # Count line of file
 number_line=0
 # Read file line to line
@@ -66,9 +68,51 @@ while read line
 do
   # Increment number of line
   number_line=`expr $number_line + 1`
+  # Check first char no comma
+  if [ ${line:0:1} = "," ]
+  then
+    echo "In file $1 in line $number_line have not user name, the first char is comma."
+    valid=0
+  fi
+  # Check end char no comma
+  if [ ${line:`expr $(expr length $line) - 1`:1} = "," ]
+  then
+    echo "In file $1 in line $number_line have not password, the end char is comma."
+    valid=0
+  fi
   # Count number of commas per line
-  echo $number_line $line
+  # Check char to char
+  for c in $(seq 0 `expr $(expr length $line) - 1` )
+  do
+    if [ $c = 0 ]
+    then
+      number_commas=0
+      continue
+    else
+      # Check if is comma
+      if [ ${line:$c:1} = "," ]
+      then
+        number_commas=`expr $number_commas + 1`
+      fi
+    fi
+    # Check end char
+    if [ $c = `expr $(expr length $line) - 1` ]
+    then
+      # Check total of commas
+        if [ ! $number_commas = 1 ]
+        then
+          echo "In file $1 in line $number_line have $number_commas commas."
+          valid=0
+        fi
+    fi
+  done
 done < $1
+
+# Check if file is valid
+if [ $valid = 0 ]
+then
+  exit
+fi
 
 # Read file line to line and split user and password
 #  IFS is variable of Internal Field Separator, and the internal command read
