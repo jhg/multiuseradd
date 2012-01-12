@@ -1,7 +1,6 @@
 Linux script for add multiple news users from file in csv format.
 
-The file in CSV format must use commas asseparators.
-
+Multiuseradd (C) 2012 Jesús Hernández Gormaz
 This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License as
   published by the Free Software Foundation; either version 3, or
@@ -13,3 +12,7 @@ This program is free software; you can redistribute it and/or
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+The file in CSV format must use commas asseparators.
+Need Perl interpreter for run.
