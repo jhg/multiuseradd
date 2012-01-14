@@ -21,7 +21,7 @@
 ##############################################################################
 
 # Help
-if [ $# -lt 1 ] || [ $1 = "--help" ]
+if [ $# -lt 1 ] || [ "$1" = "--help" ]
 then
   cat <<HELP
 Multiuseradd (C) 2012 Jesús Hernández Gormaz
@@ -44,7 +44,7 @@ HELP
 fi
 
 # Version
-if [ $1 = "--version" ]
+if [ "$1" = "--version" ]
 then
   cat <<VERSION
 Multiuseradd 0.0.1
